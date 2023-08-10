@@ -1,9 +1,9 @@
 import cors from "cors";
 import { ctx } from "../common/context";
-import { geomineRouter } from "../routers/geomine";
-import { craftRouter } from "../routers/craft";
-import { specRouter } from "../routers/spec";
-import { inventoryRouter } from "../routers/inventory";
+import { geomineRouter } from "../api/geomine/geomineRouter";
+import { craftRouter } from "../api/craft/craftRouter";
+import { specRouter } from "../api/specRouter";
+import { inventoryRouter } from "../api/inventory/inventoryRouter";
 
 const app = ctx.nextApp();
 app.use(cors());
