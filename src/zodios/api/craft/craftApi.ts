@@ -1,15 +1,13 @@
 import { makeApi, makeEndpoint } from "@zodios/core";
 import z from "zod";
-import { urlPathParamSchema } from "../../schemas/SharedSchemas";
 import {
   amountSchema,
-  currencySchema,
+  urlPathParamSchema,
   pubkeyStrSchema,
   thirtyTwoBytesSchema,
-} from "../../schemas/SolanaPaySchemas";
+} from "../../schemas/SharedSchemas";
 import { errors } from "../api";
 import { craftibleSchema } from "./craftibles";
-
 
 export type CreateCraft = z.infer<typeof createCraftSchema>;
 export const createCraftSchema = z.object({
@@ -71,7 +69,7 @@ const getCraftStatus = makeEndpoint({
       name: "id",
       schema: thirtyTwoBytesSchema,
       description:
-        "Craft Reference ID (qrRefId)- used as reference in transaction",
+        "Craft Reference ID (refId)- used as reference in transaction",
     },
   ],
   errors,
@@ -98,10 +96,10 @@ export const craftApi = makeApi([getCraftStatus, getAllCrafts]);
 const getCraft = makeEndpoint({
   name: "getCraft",
   tags: ["craft"],
-  description: "QR entrypoint initiating item purchase",
+  description: "Entrypoint initiating item purchase",
   method: "get",
-  path: "/craft/:playerId/:itemId/:playerId",
-  alias: "getPurchase",
+  path: "/craft/:playerId/:itemId",
+  alias: "craftItem",
   parameters: [
     {
       type: "Path",
@@ -113,13 +111,7 @@ const getCraft = makeEndpoint({
       type: "Query",
       name: "amount",
       schema: amountSchema.optional(),
-      description: "Number of items to purchase. Omit for 1.",
-    },
-    {
-      type: "Query",
-      name: "token",
-      schema: currencySchema.optional(),
-      description: "Token to use for purchase. Omit for SOL.",
+      description: "Number of items to craft. Omit for 1.",
     },
   ],
 
