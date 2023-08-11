@@ -1,7 +1,7 @@
 import { makeApi, makeEndpoint } from "@zodios/core";
 import { Document } from "mongodb";
 import * as z from "zod";
-import { errors } from "../api";
+import { errors } from "../../common/errorHandler";
 import { resourceSchema } from "../geomine/resources";
 // GET: /opos/inventory returns array of resources and crafted items
 export type InventoryDoc = Document & Inventory;

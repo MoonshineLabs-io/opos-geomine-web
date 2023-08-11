@@ -1,22 +1,18 @@
+import { makeApi, makeEndpoint } from "@zodios/core";
 import { openApiBuilder } from "@zodios/openapi";
+import z from "zod";
 import { ctx } from "../common/context";
-import { info, specApi } from "./api";
+import { info, localServer, servers } from "../common/oapiConfig";
 import { geomineApi } from "./geomine/geomineApi";
 
-export const servers = [
-  {
-    url: "https://devopos.moonshinelabs.io/api/opos",
-    description: "Development Server",
-  },
-  {
-    url: "https://stageopos.moonshinelabs.io/api/opos",
-    description: "Staging Server",
-  },
-  {
-    url: "https://opos.moonshinelabs.io/api/opos",
-    description: "Production Server",
-  },
-];
+const getSpec = makeEndpoint({
+  method: "get",
+  path: "/spec",
+  alias: "getSpec",
+  response: z.any(),
+});
+export const specApi = makeApi([getSpec]);
+
 export const specRouter = ctx.router(specApi);
 // export const specRouter = zodiosRouter(specApi);
 
@@ -29,6 +25,7 @@ specRouter.get("/spec", (req, res) => {
     .addServer(servers[0])
     .addServer(servers[1])
     .addServer(servers[2])
+    .addServer(localServer)
     .addPublicApi(specApi)
     .addPublicApi(geomineApi)
     .build();

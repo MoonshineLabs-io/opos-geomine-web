@@ -1,9 +1,9 @@
 import cors from "cors";
 import { ctx } from "../common/context";
-import { geomineRouter } from "../api/geomine/geomineRouter";
-import { craftRouter } from "../api/craft/craftRouter";
-import { specRouter } from "../api/specRouter";
 import { inventoryRouter } from "../api/inventory/inventoryRouter";
+import { craftRouter } from "../api/craft/craftRouter";
+import { geomineRouter } from "../api/geomine/geomineRouter";
+import { specRouter } from "../api/spec";
 
 const app = ctx.nextApp();
 app.use(cors());
@@ -21,17 +21,17 @@ app.use((req, res, next) => {
 
   next();
 });
-app.use("/api/opos", inventoryRouter);
-app.use("/api/opos", craftRouter);
-app.use("/api/opos", geomineRouter);
-app.use("/api/opos", specRouter);
-app.use("/api/opos", (req, res, next) => {
+app.use("/api", inventoryRouter);
+app.use("/api", craftRouter);
+app.use("/api", geomineRouter);
+app.use("/api", specRouter);
+app.use("/api", (req, res, next) => {
   if (res.errored) {
     console.log("res.errored", res.errored);
   }
   next();
 });
-app.use("/api/opos", (req, res) => {
+app.use("/api", (req, res) => {
   return res
     .status(404)
     .json({ error: { code: "Route Not Found", message: "Not Found" } });

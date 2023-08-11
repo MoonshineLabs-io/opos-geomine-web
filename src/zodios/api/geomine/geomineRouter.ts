@@ -32,9 +32,6 @@ geomineRouter.post("/geomine", async (req, res) => {
       },
     },
   });
-
-  // Calculate the probability of finding rare materials based on the number of nearby attempts
-
   // Record the mining attempt
   await geomineCollection.insertOne({
     location: {
@@ -48,18 +45,14 @@ geomineRouter.post("/geomine", async (req, res) => {
   }
   // Create a weighted pool of potential resources based on rarity and probability
   const weightedPool: Resource[] = [];
+  const baseCount = 100; // Base count for each item in the pool
   for (const item of resources) {
     let probability = (1 / item.rarity) * Math.pow(0.8, nearbyAttempts);
-    if (probability < 0) probability = 0;
-    if (probability > 1) probability = 1;
+    probability = Math.min(Math.max(probability, 0), 1); // Clamp probability
     if (item.rarity === 1) probability = 1;
-    const baseCount = 100; // Base count for each item in the pool
     const itemCount = Math.floor(baseCount * probability);
-    for (let i = 0; i < itemCount; i++) {
-      weightedPool.push(item);
-    }
+    weightedPool.push(...Array(itemCount).fill(item));
   }
-
   // Randomly select 10 items from the weighted pool
   const foundItems: Resource[] = [];
   for (let i = 0; i < 10; i++) {

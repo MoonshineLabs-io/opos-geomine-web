@@ -1,4 +1,4 @@
-import { app } from "../../../zodios/app/server";
+import { app } from "../../zodios/app/server";
 
 export const config = {
     api: {

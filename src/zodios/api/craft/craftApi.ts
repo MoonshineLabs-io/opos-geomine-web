@@ -6,7 +6,7 @@ import {
   pubkeyStrSchema,
   thirtyTwoBytesSchema,
 } from "../../schemas/SharedSchemas";
-import { errors } from "../api";
+import { errors } from "../../common/errorHandler";
 import { craftibleSchema } from "./craftibles";
 
 export type CreateCraft = z.infer<typeof createCraftSchema>;
