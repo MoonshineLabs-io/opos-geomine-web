@@ -6,6 +6,7 @@ import { SwaggerUIProps } from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 import { info, servers, localServer } from "../../zodios/common/oapiConfig";
 import { geomineApi } from "../../zodios/api/geomine/geomineApi";
+import { inventoryApi } from "../../zodios/api/geomine/inventoryApi";
 
 const SwaggerUI = dynamic<SwaggerUIProps>(import("swagger-ui-react"), {
   ssr: false,
@@ -22,6 +23,7 @@ export const getStaticProps: GetStaticProps = async () => {
     .addServer(serversMod[1])
     .addServer(serversMod[2])
     .addPublicApi(geomineApi)
+    .addPublicApi(inventoryApi)
     .build();
   const spec = JSON.stringify(spec1);
   return {
