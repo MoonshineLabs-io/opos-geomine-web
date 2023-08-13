@@ -13,14 +13,7 @@ export const publicKeySchema = z
   });
 
 export const thirtyTwoBytesSchema = base58Schema.refine(
-  (value) => {
-    try {
-      const decoded = bs58.decode(value);
-      return decoded.length === 32;
-    } catch {
-      return false;
-    }
-  },
+  (value) => bs58.decode(value).length === 32,
   {
     message: "Must be a valid base58-encoded 32 byte string",
   }

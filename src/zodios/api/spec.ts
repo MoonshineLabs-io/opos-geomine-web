@@ -11,5 +11,5 @@ const getSpec = makeEndpoint({
 });
 export const specApi = makeApi([getSpec]);
 export const specRouter = ctx.router(specApi);
-specRouter.get("/spec", (req, res) => res.status(200).json(apiSpec));
+specRouter.get("/spec", (req, res) => res.status(200).json(apiSpec()));
 // const oapiRouter = zodiosRouter([...platformApi, ...itemApi]);

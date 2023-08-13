@@ -25,8 +25,8 @@ export const craftGetResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   craftId: urlPathParamSchema,
-  platCustPub: pubkeyStrSchema,
-  craftRefId: thirtyTwoBytesSchema,
+  // platCustPub: pubkeyStrSchema,
+  // craftRefId: thirtyTwoBytesSchema,
   createdUTC: z.number(),
 });
 
@@ -45,13 +45,13 @@ const craft = makeEndpoint({
   parameters: [
     {
       type: "Body",
-      name: "inventory",
+      name: "itemId",
       schema: z.object({
-        item: z.string(),
-        craftId: urlPathParamSchema,
-        createdUTC: z.number(),
+        itemId: z.string(),
+        // craftId: urlPathParamSchema,
+        // createdUTC: z.number(),
       }),
-      description: "Inventory to create",
+      description: "Craft an item",
     },
   ],
   response: craftGetResponseSchema,
@@ -91,7 +91,7 @@ const getAllCrafts = makeEndpoint({
   description: "Get all crafts by playerId",
   errors,
 });
-export const craftApi = makeApi([getCraftStatus, getAllCrafts]);
+export const craftApi2 = makeApi([getCraftStatus, getAllCrafts]);
 
 const getCraft = makeEndpoint({
   name: "getCraft",
@@ -120,5 +120,5 @@ const getCraft = makeEndpoint({
   errors,
 });
 
-export const craftApiSchema = makeApi([getCraftStatus]);
-export type CraftApi = typeof craftApiSchema;
+export const craftApi = makeApi([craft]);
+export type CraftApi = typeof craftApi;
