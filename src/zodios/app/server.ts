@@ -4,6 +4,7 @@ import { inventoryRouter } from "../api/inventory/inventoryRouter";
 import { craftRouter } from "../api/craft/craftRouter";
 import { geoRouter } from "../api/geo/geoRouter";
 import { specRouter } from "../api/spec";
+import { registerRouter } from "../api/register/registerRouter";
 
 const app = ctx.nextApp();
 app.use(cors());
@@ -25,6 +26,7 @@ app.use("/api", inventoryRouter);
 app.use("/api", craftRouter);
 app.use("/api", geoRouter);
 app.use("/api", specRouter);
+app.use("/api", registerRouter);
 app.use("/api", (req, res, next) => {
   if (res.errored) {
     console.log("res.errored", res.errored);
