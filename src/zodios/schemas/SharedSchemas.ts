@@ -1,16 +1,17 @@
-import { PublicKey } from "@solana/web3.js";
+// import { PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 import z from "zod";
+export type playerId = z.infer<typeof playerIdSchema>;
 export type PubkeyString = z.infer<typeof pubkeyStrSchema>;
 export type Base58String = z.infer<typeof base58Schema>;
 export const base58Schema = z.string().regex(/^([1-9a-km-zA-HJ-NP-Z]+)$/);
 export const pubkeyStrSchema = base58Schema.min(26).max(48);
 export const pubkeyStrArraySchema = z.array(pubkeyStrSchema);
-export const publicKeySchema = z
-  .any()
-  .refine((key) => key instanceof PublicKey, {
-    message: "Must be a valid public key",
-  });
+// export const publicKeySchema = z
+//   .any()
+//   .refine((key) => key instanceof PublicKey, {
+//     message: "Must be a valid public key",
+//   });
 
 export const thirtyTwoBytesSchema = base58Schema.refine(
   (value) => bs58.decode(value).length === 32,
@@ -18,6 +19,7 @@ export const thirtyTwoBytesSchema = base58Schema.refine(
     message: "Must be a valid base58-encoded 32 byte string",
   }
 );
+export const playerIdSchema = thirtyTwoBytesSchema;
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 
 // Define a regular expression that allows URL-safe characters (alphanumeric, hyphen, underscore)
@@ -29,7 +31,14 @@ export const urlPathParamSchema = z
     message:
       "The string must contain only URL-safe characters (alphanumeric, hyphen, underscore).",
   });
-
+  export const txResponseSchema = z.object({
+    success: z.boolean(),
+    message: z.string(),
+    // craftId: urlPathParamSchema,
+    // platCustPub: pubkeyStrSchema,
+    // craftRefId: thirtyTwoBytesSchema,
+    // createdUTC: z.number(),
+  });
 // Define and export a constant function to validate URL path parameters
 export const validateUrlPathParam = (param: string) => {
   const validationResult = urlPathParamSchema.safeParse(param);

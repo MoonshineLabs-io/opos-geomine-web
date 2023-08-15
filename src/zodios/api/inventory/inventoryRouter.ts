@@ -2,7 +2,7 @@ import { ctx } from "../../common/context";
 import { makeError } from "../../common/errorHandler";
 import { thirtyTwoBytesSchema } from "../../schemas/SharedSchemas";
 import { craftibles } from "../craft/craftibles";
-import { Resource, resources } from "../geomine/resources";
+import { resources } from "../geo/resources";
 import { Inventory, inventoryApi } from "./inventoryApi";
 
 export const inventoryRouter = ctx.router(inventoryApi);
@@ -11,7 +11,8 @@ inventoryRouter.get("/inventory/:id", async (req, res) => {
   const id = req.params.id;
   // const p = await getInventory(id);
   const parseInput = thirtyTwoBytesSchema.safeParse(id);
-    if (!parseInput.success) return res.status(400).json(makeError(400, "Invalid id (wallet address)."));
+  if (!parseInput.success)
+    return res.status(400).json(makeError(400, "Invalid id (wallet address)."));
   //     return res.status(401).json({
   //       error: { code: "Invalid input", message: zFail(parseInput.error) },
   //     });
@@ -37,8 +38,8 @@ inventoryRouter.get("/inventory/:id", async (req, res) => {
   };
 
   const inventory: Inventory = {
-    resources: getRandomItems(resources, getRandomNumber(0, 20)),
-    craftibles: getRandomItems(craftibles, getRandomNumber(0, 20)),
+    resources: getRandomItems(resources, getRandomNumber(0, 15)),
+    craftibles: getRandomItems(craftibles, getRandomNumber(0, 6)),
     lastModified: new Date(),
   };
   return res.status(200).json(inventory);

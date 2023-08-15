@@ -1,28 +1,31 @@
+import { playerId, playerIdSchema } from "../../schemas/SharedSchemas";
 import { ctx } from "../../common/context";
-import { geomineApi } from "./geomineApi";
-
+import { z } from "zod";
 import { Collection } from "mongodb";
 import { getMongoClient } from "../../db/dbConnect";
 import { Resource, resources } from "./resources";
-
-export const geomineRouter = ctx.router(geomineApi);
+import geoApi from "./geoApi";
+export const geoRouter = ctx.router(geoApi);
 
 const RADIUS_IN_METERS = 10;
 
-interface MiningAttempt {
-  location: {
-    type: string;
-    coordinates: [number, number];
-  };
-}
+type MiningAttempt = z.infer<typeof miningSchema>;
 
-geomineRouter.post("/geomine", async (req, res) => {
+export const miningSchema = z.object({
+  playerId: playerIdSchema,
+  utc: z.number(),
+  location: z.object({
+    type: z.string(),
+    coordinates: z.array(z.number()),
+  }),
+});
+geoRouter.post("/geo/scan", async (req, res) => {
   const { longitude, latitude } = req.body;
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
-  const geomineCollection: Collection<MiningAttempt> = db.collection("geomine");
+  const geoscanCollection: Collection<MiningAttempt> = db.collection("geoscan");
   // Calculate the number of previous mining attempts within 10 meters of the given location
-  const nearbyAttempts = await geomineCollection.countDocuments({
+  const nearbyAttempts = await geoscanCollection.countDocuments({
     location: {
       $geoWithin: {
         $centerSphere: [
@@ -33,7 +36,9 @@ geomineRouter.post("/geomine", async (req, res) => {
     },
   });
   // Record the mining attempt
-  await geomineCollection.insertOne({
+  await geoscanCollection.insertOne({
+    playerId: req.body.playerId,
+    utc: Date.now(),
     location: {
       type: "Point",
       coordinates: [longitude, latitude],
@@ -61,11 +66,3 @@ geomineRouter.post("/geomine", async (req, res) => {
 
   return res.status(200).json(foundItems);
 });
-// geomineRouter.get("/geomine/:id", async (req, res) => {
-//   const { id } = req.params;
-//   // const item = await findItem(platformId, id);
-//   console.log({ item });
-//   if (!item) return res.status(404).json(makeError(404, "Item not found"));
-
-//   return res.status(200).json(item);
-// });

@@ -1,6 +1,6 @@
 import { openApiBuilder } from "@zodios/openapi";
 import { craftApi } from "../api/craft/craftApi";
-import { geomineApi } from "../api/geomine/geomineApi";
+import geoApi from "../api/geo/geoApi";
 import { inventoryApi } from "../api/inventory/inventoryApi";
 import { specApi } from "../api/spec";
 
@@ -40,7 +40,7 @@ export const apiSpec = (lh = false) => {
     .addServer(servers[1])
     .addServer(servers[2])
     .addServer(localServer)
-    .addPublicApi(geomineApi)
+    .addPublicApi(geoApi)
     .addPublicApi(inventoryApi)
     .addPublicApi(craftApi)
     .addPublicApi(specApi)

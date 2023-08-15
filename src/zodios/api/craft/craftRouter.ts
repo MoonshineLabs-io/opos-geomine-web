@@ -25,8 +25,8 @@ craftRouter.post("/craft", async (req, res) => {
   const response = {
     success,
     message,
-    craftId: Keypair.generate().publicKey.toString(),
-    createdUTC: Date.now(),
+    // craftId: Keypair.generate().publicKey.toString(),
+    // createdUTC: Date.now(),
   };
   return res.status(200).json(response);
   // return res.status(200).json([] as Craftible[]);

@@ -1,11 +1,11 @@
 import { makeApi, makeEndpoint } from "@zodios/core";
-import { Document } from "mongodb";
+// import { Document } from "mongodb";
 import * as z from "zod";
 import { errors } from "../../common/errorHandler";
-import { thirtyTwoBytesSchema } from "../../schemas/SharedSchemas";
+import { playerIdSchema } from "../../schemas/SharedSchemas";
 import { craftibleSchema } from "../craft/craftibles";
-import { resourceSchema } from "../geomine/resources";
-export type InventoryDoc = Document & Inventory;
+import { resourceSchema } from "../geo/resources";
+// export type InventoryDoc = Document & Inventory;
 export type Inventory = z.infer<typeof inventorySchema>;
 export const inventorySchema = z.object({
   resources: resourceSchema.array(),
@@ -23,8 +23,8 @@ const getInventory = makeEndpoint({
     {
       type: "Path",
       name: "id",
-      schema: thirtyTwoBytesSchema,
-      description: "Player ID (address)",
+      schema: playerIdSchema,
+      description: "Player ID (wallet address)",
     },
   ],
   errors,

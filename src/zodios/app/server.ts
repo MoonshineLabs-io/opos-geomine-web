@@ -2,7 +2,7 @@ import cors from "cors";
 import { ctx } from "../common/context";
 import { inventoryRouter } from "../api/inventory/inventoryRouter";
 import { craftRouter } from "../api/craft/craftRouter";
-import { geomineRouter } from "../api/geomine/geomineRouter";
+import { geoRouter } from "../api/geo/geoRouter";
 import { specRouter } from "../api/spec";
 
 const app = ctx.nextApp();
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 app.use("/api", inventoryRouter);
 app.use("/api", craftRouter);
-app.use("/api", geomineRouter);
+app.use("/api", geoRouter);
 app.use("/api", specRouter);
 app.use("/api", (req, res, next) => {
   if (res.errored) {

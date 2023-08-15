@@ -5,6 +5,7 @@ import {
   urlPathParamSchema,
   pubkeyStrSchema,
   thirtyTwoBytesSchema,
+  txResponseSchema,
 } from "../../schemas/SharedSchemas";
 import { errors } from "../../common/errorHandler";
 import { craftibleSchema } from "./craftibles";
@@ -21,14 +22,7 @@ export const craftSchema = createCraftSchema.extend({
   txSignature: z.string().optional(),
   txLookupUTC: z.number().optional(),
 });
-export const craftGetResponseSchema = z.object({
-  success: z.boolean(),
-  message: z.string(),
-  craftId: urlPathParamSchema,
-  // platCustPub: pubkeyStrSchema,
-  // craftRefId: thirtyTwoBytesSchema,
-  createdUTC: z.number(),
-});
+
 
 export const craftStatusSchema = z.object({
   confirmed: z.boolean(),
@@ -54,7 +48,7 @@ const craft = makeEndpoint({
       description: "Craft an item",
     },
   ],
-  response: craftGetResponseSchema,
+  response: txResponseSchema,
   errors,
 });
 const getCraftStatus = makeEndpoint({
@@ -115,7 +109,7 @@ const getCraft = makeEndpoint({
     },
   ],
 
-  response: craftGetResponseSchema,
+  response: txResponseSchema,
   status: 200,
   errors,
 });
