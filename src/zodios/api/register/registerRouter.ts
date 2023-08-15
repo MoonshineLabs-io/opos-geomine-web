@@ -22,8 +22,8 @@ registerRouter.get("/register", async (req, res) => {
 //     secretKey: bs58.encode(privkey),
 //     utc: Date.now(),
 //   });
-
-  const redirectUrl = `https://phantom.app/?method=connect&dapp_encryption_public_key=${pubkey.toString()}&redirect=https://opos.moonshinelabs.io/api/redirect`;
+// https://phantom.app/ul/v1/connect?app_url=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fqr%2F4SpRpH2DB5nLNtXqjTWnFtZfWDh8CnqEXYcQFy8JWhD9&dapp_encryption_public_key=triQem2gDXHXweNceTKWGfDfN6AnpCHmjR745LXcbix&redirect_link=unitydl://onPhantomConnected
+  const redirectUrl = `https://phantom.app/ul/v1/connect?app_url=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fqr%2F4SpRpH2DB5nLNtXqjTWnFtZfWDh8CnqEXYcQFy8JWhD9&dapp_encryption_public_key=${pubkey.toString()}&redirect=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fredirect`;
 
   return res.redirect(redirectUrl);
 });
