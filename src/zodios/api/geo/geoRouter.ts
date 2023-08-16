@@ -5,7 +5,18 @@ import { Collection } from "mongodb";
 import { getMongoClient } from "../../db/dbConnect";
 import { Resource, resources } from "./resources";
 import geoApi from "./geoApi";
+
 export const geoRouter = ctx.router(geoApi);
+
+import { Keypair } from "@solana/web3.js";
+import bs58 from "bs58";
+const keypair = Keypair.generate();
+const privkey = keypair.secretKey;
+const pubkey = keypair.publicKey;
+console.log("privkey", bs58.encode(privkey));
+console.log("pubkey", pubkey.toString());
+const receivedPubkeyMock = Keypair.generate().publicKey.toString();
+
 
 const RADIUS_IN_METERS = 10;
 

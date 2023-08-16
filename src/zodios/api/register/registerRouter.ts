@@ -2,7 +2,7 @@ import { ctx } from "../../common/context";
 import { z } from "zod";
 import { Collection } from "mongodb";
 import { getMongoClient } from "../../db/dbConnect";
-import registerApi from "./registerApi";
+import registerApi, { SolanaPayGetQRResponse } from "./registerApi";
 
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
@@ -23,7 +23,12 @@ registerRouter.get("/register", async (req, res) => {
 //     utc: Date.now(),
 //   });
 // https://phantom.app/ul/v1/connect?app_url=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fqr%2F4SpRpH2DB5nLNtXqjTWnFtZfWDh8CnqEXYcQFy8JWhD9&dapp_encryption_public_key=triQem2gDXHXweNceTKWGfDfN6AnpCHmjR745LXcbix&redirect_link=unitydl://onPhantomConnected
-  const redirectUrl = `https://phantom.app/ul/v1/connect?app_url=https%3A%2F%2Fdev.moonshinelabs.io%2Fapi%2Fqr%2F4SpRpH2DB5nLNtXqjTWnFtZfWDh8CnqEXYcQFy8JWhD9&dapp_encryption_public_key=${pubkey.toString()}&redirect=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fredirect`;
+  const redirectUrl = `https://phantom.app/ul/v1/connect?app_url=https%3A%2F%2Fopos.moonshinelabs.io&dapp_encryption_public_key=${pubkey.toString()}&redirect=https%3A%2F%2Fopos.moonshinelabs.io%2Fapi%2Fredirect`;
 
   return res.redirect(redirectUrl);
 });
+
+// registerRouter.get("/register/meta", async (req, res) => {
+//     const meta: SolanaPayGetQRResponse
+//   return res.status(200).json(meta);
+// });
