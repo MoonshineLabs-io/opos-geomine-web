@@ -20,6 +20,17 @@ const register = makeEndpoint({
   errors,
 });
 
+const r = makeEndpoint({
+  method: "get",
+  path: "/register/r/:protocol/:name",
+  alias: "testRedirect",
+  response: z.object({
+    redirectUrl: z.string(),
+  }),
+  description: "Testing protocol redirects",
+  errors,
+});
+
 const redirect = makeEndpoint({
   method: "get",
   path: "/register/redirect/:npubkey",
@@ -54,5 +65,5 @@ const redirect = makeEndpoint({
   errors,
 });
 
-const api = makeApi([register, redirect]);
+const api = makeApi([register, redirect, r]);
 export default api;

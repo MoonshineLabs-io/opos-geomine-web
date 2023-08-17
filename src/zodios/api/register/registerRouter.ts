@@ -105,6 +105,10 @@ registerRouter.get("/register", async (req, res) => {
   // will hit redirect endpoint with:
 });
 
+registerRouter.get("/register/r/:protocol/:name", async (req, res) => {
+  const { protocol, name } = req.params;
+res.redirect(protocol + "://" + name);
+});
 registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   // ?phantom_encryption_public_key=KbnntHs2XQ4eusxo5psP8gJHSnwG736uREAeN63Bp5a&nonce=MYNdsCS2UE1958VH2r4NeLtbYG6usA3Tq&data=3TgXuzzoHVKMd8
   const { phantom_encryption_public_key, nonce, data } = req.query;
