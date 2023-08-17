@@ -22,7 +22,7 @@ const register = makeEndpoint({
 
 const redirect = makeEndpoint({
   method: "get",
-  path: "/register/redirect",
+  path: "/register/redirect/:npubkey",
   alias: "registerRedirect",
   parameters: [
     //phantom_encryption_public_key, nonce, data

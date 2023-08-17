@@ -15,6 +15,22 @@ type Player = z.infer<typeof playerSchema>;
 
 export const playerSchema = z.object({
   playerId: playerIdSchema,
+  playerWallet: z.string(),
+  secret: z.string(),
+  // npubkey: z.string(),
+  utc: z.number(),
+  location: z
+    .object({
+      type: z.string(),
+      coordinates: z.array(z.number()),
+    })
+    .optional(),
+});
+
+type Registration = z.infer<typeof registrationSchema>;
+
+export const registrationSchema = z.object({
+  // playerId: playerIdSchema,
   secret: z.string(),
   npubkey: z.string(),
   utc: z.number(),
@@ -25,7 +41,6 @@ export const playerSchema = z.object({
     })
     .optional(),
 });
-
 function getNaclKeypairFromSolanaKeypair(keypair: Keypair) {
   return nacl.box.keyPair.fromSecretKey(keypair.secretKey.slice(0, 32));
 }
@@ -51,10 +66,10 @@ registerRouter.get("/register", async (req, res) => {
 
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
-  const playersCollection: Collection<Player> = db.collection("players");
+  const registrationCollection: Collection<Registration> = db.collection("registrations");
 
-  await playersCollection.insertOne({
-    playerId: cpubkey,
+  await registrationCollection.insertOne({
+    // playerId: cpubkey,
     secret: cprivkey,
     npubkey: npubkey,
     utc: Date.now(),
@@ -84,23 +99,26 @@ registerRouter.get("/register", async (req, res) => {
   });
 
   // Construct the full redirect URL
-  const redirectUrl = baseUrl + method + "?" + params.toString() + `&redirect_link=${hostPath}/api/register/redirect`;
+  const redirectUrl = baseUrl + method + "?" + params.toString() + `&redirect_link=${hostPath}/api/register/redirect/${npubkey}`;
   console.log({ redirectUrl });
   return res.redirect(redirectUrl);
   // will hit redirect endpoint with:
 });
 
-registerRouter.get("/register/redirect", async (req, res) => {
+registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   // ?phantom_encryption_public_key=KbnntHs2XQ4eusxo5psP8gJHSnwG736uREAeN63Bp5a&nonce=MYNdsCS2UE1958VH2r4NeLtbYG6usA3Tq&data=3TgXuzzoHVKMd8
   const { phantom_encryption_public_key, nonce, data } = req.query;
+  const { npubkey } = req.params;
+  console.log({ phantom_encryption_public_key, nonce, data });
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
+  const registrationCollection: Collection<Registration> = db.collection("registrations");
   const playersCollection: Collection<Player> = db.collection("players");
-  const player = await playersCollection.findOne({
-    npubkey: phantom_encryption_public_key,
+  const registration = await registrationCollection.findOne({
+    npubkey: npubkey as string,
   });
-  if (!player) return res.status(400).json(makeError(400, `Player not found.`));
-  const naclKeypair = getNaclKeypairFromCustodialPrivateKey(player.secret);
+  if (!registration) return res.status(400).json(makeError(400, `Registration not found.`));
+  const naclKeypair = getNaclKeypairFromCustodialPrivateKey(registration.secret);
   const sharedSecret = nacl.box.before(
     Uint8Array.from(bs58.decode(phantom_encryption_public_key)),
     naclKeypair.secretKey
@@ -114,7 +132,24 @@ registerRouter.get("/register/redirect", async (req, res) => {
     return res.status(400).json(makeError(400, `Unable to decrypt data.`));
   const decryptedDataString = Buffer.from(decryptedData).toString("utf8");
   console.log(decryptedDataString);
-  const playerWallet = decryptedDataString;
+  const playerWallet = JSON.parse(decryptedDataString).public_key;
+  const addPlayerIfNotExistsResult = await playersCollection.updateOne(
+    { 
+      playerWallet: playerWallet,
+    // npubkey: npubkey as string,
+    // wallet: { $exists: false },
+     },
+    {
+      $setOnInsert: {
+        playerId:Keypair.fromSecretKey(bs58.decode(registration.secret)).publicKey.toString(),
+        playerWallet: playerWallet,
+        secret: registration.secret,
+        // npubkey: phantom_encryption_public_key,
+        utc: Date.now(),
+      },
+    },
+    { upsert: true }
+  );
   const updatePlayerResult = await playersCollection.updateOne(
     { npubkey: phantom_encryption_public_key },
     {

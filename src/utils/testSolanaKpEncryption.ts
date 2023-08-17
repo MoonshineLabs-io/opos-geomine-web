@@ -30,7 +30,6 @@ const encryptPayload = (payload: any, sharedSecret?: Uint8Array) => {
 const dappKeyPairSolana = Keypair.generate();
 
 const dappKeypair = nacl.box.keyPair.fromSecretKey(dappKeyPairSolana.secretKey.slice(0,32));
-
 // Test: Generate a phantom keypair for testing purposes using nacl.box.keyPair()
 const phantomKeyPair = nacl.box.keyPair();
 
