@@ -20,5 +20,39 @@ const register = makeEndpoint({
   errors,
 });
 
-const api = makeApi([register]);
+const redirect = makeEndpoint({
+  method: "get",
+  path: "/register/redirect",
+  alias: "registerRedirect",
+  parameters: [
+    //phantom_encryption_public_key, nonce, data
+    {
+      type: "Query",
+      name: "phantom_encryption_public_key",
+      schema: z.string(),
+      description: "Phantom's public key for encrypting data",
+    },
+    {
+      type: "Query",
+      name: "nonce",
+      schema: z.string(),
+      description: "Nonce for Phantom's encryption",
+    },
+    {
+      type: "Query",
+      name: "data",
+      schema: z.string(),
+      description: "Encrypted data from Phantom",
+    },
+  ],
+
+  response: z.object({
+    // redirectUrl: z.string(),
+    data: z.string(),
+  }),
+  description: "Generates a Solana keypair, stores the secret key and UTC, then redirects to Phantom.com",
+  errors,
+});
+
+const api = makeApi([register, redirect]);
 export default api;

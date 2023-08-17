@@ -1,22 +1,12 @@
-import { playerId, playerIdSchema } from "../../schemas/SharedSchemas";
-import { ctx } from "../../common/context";
-import { z } from "zod";
 import { Collection } from "mongodb";
+import { z } from "zod";
+import { ctx } from "../../common/context";
 import { getMongoClient } from "../../db/dbConnect";
-import { Resource, resources } from "./resources";
+import { playerIdSchema } from "../../schemas/SharedSchemas";
 import geoApi from "./geoApi";
+import { Resource, resources } from "./resources";
 
 export const geoRouter = ctx.router(geoApi);
-
-import { Keypair } from "@solana/web3.js";
-import bs58 from "bs58";
-const keypair = Keypair.generate();
-const privkey = keypair.secretKey;
-const pubkey = keypair.publicKey;
-console.log("privkey", bs58.encode(privkey));
-console.log("pubkey", pubkey.toString());
-const receivedPubkeyMock = Keypair.generate().publicKey.toString();
-
 
 const RADIUS_IN_METERS = 10;
 
@@ -34,7 +24,8 @@ geoRouter.post("/geo/scan", async (req, res) => {
   const { longitude, latitude } = req.body;
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
-  const geoscanCollection: Collection<MiningAttempt> = db.collection("geoscan");
+  const geoscanCollection: Collection<MiningAttempt> =
+    db.collection("geoscans");
   // Calculate the number of previous mining attempts within 10 meters of the given location
   const nearbyAttempts = await geoscanCollection.countDocuments({
     location: {
