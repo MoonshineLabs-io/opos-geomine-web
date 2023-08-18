@@ -59,7 +59,7 @@ const redirect = makeEndpoint({
 
   response: z.object({
     // redirectUrl: z.string(),
-    data: z.string(),
+    playerId: z.string(),
   }),
   description: "Generates a Solana keypair, stores the secret key and UTC, then redirects to Phantom.com",
   errors,

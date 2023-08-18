@@ -66,7 +66,8 @@ registerRouter.get("/register", async (req, res) => {
 
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
-  const registrationCollection: Collection<Registration> = db.collection("registrations");
+  const registrationCollection: Collection<Registration> =
+    db.collection("registrations");
 
   await registrationCollection.insertOne({
     // playerId: cpubkey,
@@ -77,10 +78,11 @@ registerRouter.get("/register", async (req, res) => {
 
   const host1 = req.get("host") ?? "dev.moonshinelabs.io";
   console.log({ host1 });
-  const isLocal = host1.includes("localhost") || host1.includes("192.168") || host1.includes(":3000");
-  const hostMod = isLocal
-    ? host1.replace("localhost", "192.168.0.226")
-    : host1;
+  const isLocal =
+    host1.includes("localhost") ||
+    host1.includes("192.168") ||
+    host1.includes(":3000");
+  const hostMod = isLocal ? host1.replace("localhost", "192.168.0.226") : host1;
 
   const prot = isLocal ? "http" : "https"; // req.protocol;
   const hostPath = `${prot}://${hostMod}`;
@@ -99,7 +101,12 @@ registerRouter.get("/register", async (req, res) => {
   });
 
   // Construct the full redirect URL
-  const redirectUrl = baseUrl + method + "?" + params.toString() + `&redirect_link=${hostPath}/api/register/redirect/${npubkey}`;
+  const redirectUrl: string =
+    baseUrl +
+    method +
+    "?" +
+    params.toString() +
+    `&redirect_link=${hostPath}/api/register/redirect/${npubkey}`;
   console.log({ redirectUrl });
   return res.redirect(redirectUrl);
   // will hit redirect endpoint with:
@@ -107,7 +114,7 @@ registerRouter.get("/register", async (req, res) => {
 
 registerRouter.get("/register/r/:protocol/:name", async (req, res) => {
   const { protocol, name } = req.params;
-res.redirect(protocol + "://" + name);
+  res.redirect(protocol + "://" + name);
 });
 registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   // ?phantom_encryption_public_key=KbnntHs2XQ4eusxo5psP8gJHSnwG736uREAeN63Bp5a&nonce=MYNdsCS2UE1958VH2r4NeLtbYG6usA3Tq&data=3TgXuzzoHVKMd8
@@ -116,13 +123,17 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   console.log({ phantom_encryption_public_key, nonce, data });
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
-  const registrationCollection: Collection<Registration> = db.collection("registrations");
+  const registrationCollection: Collection<Registration> =
+    db.collection("registrations");
   const playersCollection: Collection<Player> = db.collection("players");
   const registration = await registrationCollection.findOne({
     npubkey: npubkey as string,
   });
-  if (!registration) return res.status(400).json(makeError(400, `Registration not found.`));
-  const naclKeypair = getNaclKeypairFromCustodialPrivateKey(registration.secret);
+  if (!registration)
+    return res.status(400).json(makeError(400, `Registration not found.`));
+  const naclKeypair = getNaclKeypairFromCustodialPrivateKey(
+    registration.secret
+  );
   const sharedSecret = nacl.box.before(
     Uint8Array.from(bs58.decode(phantom_encryption_public_key)),
     naclKeypair.secretKey
@@ -137,15 +148,22 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   const decryptedDataString = Buffer.from(decryptedData).toString("utf8");
   console.log(decryptedDataString);
   const playerWallet = JSON.parse(decryptedDataString).public_key;
-  const addPlayerIfNotExistsResult = await playersCollection.updateOne(
-    { 
+  if (!playerWallet)
+    return res
+      .status(444)
+      .json(makeError(444, `No public key found in decrypted data.`));
+  const secretToId = Keypair.fromSecretKey(
+    bs58.decode(registration.secret)
+  ).publicKey.toString();
+  const saveLoadPlayer = await playersCollection.findOneAndUpdate(
+    {
       playerWallet: playerWallet,
-    // npubkey: npubkey as string,
-    // wallet: { $exists: false },
-     },
+      // npubkey: npubkey as string,
+      // wallet: { $exists: false },
+    },
     {
       $setOnInsert: {
-        playerId:Keypair.fromSecretKey(bs58.decode(registration.secret)).publicKey.toString(),
+        playerId: secretToId,
         playerWallet: playerWallet,
         secret: registration.secret,
         // npubkey: phantom_encryption_public_key,
@@ -154,20 +172,21 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
     },
     { upsert: true }
   );
-  const updatePlayerResult = await playersCollection.updateOne(
-    { npubkey: phantom_encryption_public_key },
-    {
-      $set: {
-        wallet: playerWallet,
-      },
-    }
-  );
-  console.log({ updatePlayerResult });
-  
+  console.log({ saveLoadPlayer });
+  const status = saveLoadPlayer.ok;
+  if (!status)
+    return res
+      .status(400)
+      .json(makeError(400, `Player could not be loaded/created.`));
+  const playerAlreadyExists = saveLoadPlayer.value;
+  // const playerAlreadyExists = addPlayerIfNotExistsResult.lastErrorObject?.updatedExisting;
+  const playerId = saveLoadPlayer.value?.playerId ?? secretToId;
+  // const player = await playersCollection.findOne({ playerWallet: playerWallet });
+
   // const meta = JSON.parse(decryptedDataString);
   // const meta: SolanaPayGetQRResponse
   return res.status(200).json({
     // redirectUrl: "https://opos.moonshinelabs.io",
-    data: decryptedDataString,
+    playerId,
   });
 });
