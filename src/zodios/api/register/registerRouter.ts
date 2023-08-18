@@ -1,46 +1,15 @@
 import { Collection } from "mongodb";
 import nacl from "tweetnacl";
-import { z } from "zod";
 import { ctx } from "../../common/context";
 import { getMongoClient } from "../../db/dbConnect";
-import registerApi from "./registerApi";
+import registerApi, { Player, Registration } from "./registerApi";
 
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
-import { playerIdSchema } from "../../schemas/SharedSchemas";
 import { makeError } from "../../common/errorHandler";
 
 export const registerRouter = ctx.router(registerApi);
-type Player = z.infer<typeof playerSchema>;
 
-export const playerSchema = z.object({
-  playerId: playerIdSchema,
-  playerWallet: z.string(),
-  secret: z.string(),
-  // npubkey: z.string(),
-  utc: z.number(),
-  location: z
-    .object({
-      type: z.string(),
-      coordinates: z.array(z.number()),
-    })
-    .optional(),
-});
-
-type Registration = z.infer<typeof registrationSchema>;
-
-export const registrationSchema = z.object({
-  // playerId: playerIdSchema,
-  secret: z.string(),
-  npubkey: z.string(),
-  utc: z.number(),
-  location: z
-    .object({
-      type: z.string(),
-      coordinates: z.array(z.number()),
-    })
-    .optional(),
-});
 function getNaclKeypairFromSolanaKeypair(keypair: Keypair) {
   return nacl.box.keyPair.fromSecretKey(keypair.secretKey.slice(0, 32));
 }
@@ -158,15 +127,12 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   const saveLoadPlayer = await playersCollection.findOneAndUpdate(
     {
       playerWallet: playerWallet,
-      // npubkey: npubkey as string,
-      // wallet: { $exists: false },
     },
     {
       $setOnInsert: {
         playerId: secretToId,
         playerWallet: playerWallet,
         secret: registration.secret,
-        // npubkey: phantom_encryption_public_key,
         utc: Date.now(),
       },
     },
@@ -178,15 +144,8 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
     return res
       .status(400)
       .json(makeError(400, `Player could not be loaded/created.`));
-  const playerAlreadyExists = saveLoadPlayer.value;
-  // const playerAlreadyExists = addPlayerIfNotExistsResult.lastErrorObject?.updatedExisting;
   const playerId = saveLoadPlayer.value?.playerId ?? secretToId;
-  // const player = await playersCollection.findOne({ playerWallet: playerWallet });
-
-  // const meta = JSON.parse(decryptedDataString);
-  // const meta: SolanaPayGetQRResponse
   return res.status(200).json({
-    // redirectUrl: "https://opos.moonshinelabs.io",
     playerId,
   });
 });

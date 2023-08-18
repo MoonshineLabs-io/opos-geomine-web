@@ -1,14 +1,18 @@
 import { z } from "zod";
+import { pubkeyStrSchema } from "../../schemas/SharedSchemas";
 export type Resource = z.infer<typeof resourceSchema>;
 export const resourceSchema = z.object({
   label: z.string(),
-  itemId: z
-    .string()
-    .regex(/^[a-z]+([A-Z][a-z]*)*$/, "Must be in camelCase format"),
+  itemId: pubkeyStrSchema,
   type: z.string(),
   rarity: z.number().int().min(1).max(1000),
   image: z.string().optional(),
   description: z.string(),
+});
+export type ScannedResource = z.infer<typeof scannedResourceSchema>;
+export const scannedResourceSchema = resourceSchema.extend({
+  eid: z.string(),
+  // count: z.number().int().min(1).max(1000),
 });
 export const resources = [
   {

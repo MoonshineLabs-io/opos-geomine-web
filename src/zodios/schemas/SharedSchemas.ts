@@ -31,6 +31,7 @@ export const urlPathParamSchema = z
     message:
       "The string must contain only URL-safe characters (alphanumeric, hyphen, underscore).",
   });
+  export type TxResponse = z.infer<typeof txResponseSchema>;
   export const txResponseSchema = z.object({
     success: z.boolean(),
     message: z.string(),
