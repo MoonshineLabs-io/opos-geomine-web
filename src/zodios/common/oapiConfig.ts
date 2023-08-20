@@ -17,17 +17,17 @@ export const info = {
 };
 export const remoteServers = [
   {
+    url: "https://opos.moonshinelabs.io/api",
+    description: "Production Server",
+  },
+  {
     url: "https://devopos.moonshinelabs.io/api",
     description: "Development Server",
   },
   {
     url: "https://stageopos.moonshinelabs.io/api",
     description: "Staging Server",
-  },
-  {
-    url: "https://opos.moonshinelabs.io/api",
-    description: "Production Server",
-  },
+  }
 ];
 export const localServer = {
   url: "http://localhost:3000/api",
