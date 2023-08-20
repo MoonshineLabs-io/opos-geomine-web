@@ -25,7 +25,7 @@ const scan = makeEndpoint({
   errors,
 });
 const mine = makeEndpoint({
-  method: "patch",
+  method: "get",
   path: "/geo/mine/:playerId/:eid",
   alias: "geomine",
   response: txResponseSchema,

@@ -91,7 +91,7 @@ geoRouter.post("/geo/scan", async (req, res) => {
   return res.status(200).json(scannedItems);
 });
 
-geoRouter.patch("/geo/mine/:playerId/:eid", async (req, res) => {
+geoRouter.get("/geo/mine/:playerId/:eid", async (req, res) => {
   const { playerId, eid } = req.params;
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
