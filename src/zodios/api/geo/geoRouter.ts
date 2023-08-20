@@ -25,6 +25,7 @@ export const miningSchema = z.object({
 });
 geoRouter.post("/geo/scan", async (req, res) => {
   const { longitude, latitude, playerId } = req.body;
+  console.log({ longitude, latitude, playerId });
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
   const playersCollection: Collection<Player> = db.collection("players");
@@ -93,10 +94,13 @@ geoRouter.post("/geo/scan", async (req, res) => {
 
 geoRouter.get("/geo/mine/:playerId/:eid", async (req, res) => {
   const { playerId, eid } = req.params;
+  console.log({ playerId, eid });
   const client = await getMongoClient();
   const db = client.db("StarlightArtifacts");
   const playersCollection: Collection<Player> = db.collection("players");
-  const player = await playersCollection.findOne({ playerId: playerId as string });
+  const player = await playersCollection.findOne({
+    playerId: playerId as string,
+  });
   if (!player)
     return res
       .status(400)
@@ -109,7 +113,9 @@ geoRouter.get("/geo/mine/:playerId/:eid", async (req, res) => {
   const scannedItems = player.scannedItems;
   const itemIndex = scannedItems.findIndex((item) => item.eid === eid);
   if (itemIndex === -1)
-    return res.status(400).json(makeError(400, `Item not found or already mined.`));
+    return res
+      .status(400)
+      .json(makeError(400, `Item not found or already mined.`));
   const minedItem = scannedItems[itemIndex];
   scannedItems.splice(itemIndex, 1);
   const updatePlayer = await playersCollection.updateOne(

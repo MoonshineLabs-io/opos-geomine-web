@@ -32,22 +32,10 @@ export const craftStatusSchema = z.object({
 
 // POST: /opos/craft {"item":"Energon Torch"}
 const craft = makeEndpoint({
-  method: "post",
-  path: "/craft",
+  method: "get",
+  path: "/craft/:playerId/:itemId",
   alias: "craft",
   description: "Create a new Starlight Artifacts item",
-  parameters: [
-    {
-      type: "Body",
-      name: "itemId",
-      schema: z.object({
-        itemId: z.string(),
-        // craftId: urlPathParamSchema,
-        // createdUTC: z.number(),
-      }),
-      description: "Craft an item",
-    },
-  ],
   response: txResponseSchema,
   errors,
 });

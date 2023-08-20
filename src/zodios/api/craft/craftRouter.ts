@@ -8,11 +8,12 @@ import { makeError } from "../../common/errorHandler";
 // orderApi.push(getPurchase)
 export const craftRouter = ctx.router(craftApi);
 
-craftRouter.post("/craft", async (req, res) => {
-  const itemId = req.body.itemId;
+craftRouter.get("/craft/:playerId/:itemId", async (req, res) => {
+  const { playerId, itemId } = req.params;
+  console.log({ playerId, itemId });
   const validItemIds = craftibles.map(craftible => craftible.itemId);
   // Check if the provided itemId exists in the craftibles array
-  const itemExists = validItemIds.includes(itemId)
+  const itemExists = validItemIds.includes(itemId as string)
 
   if (!itemExists) return res.status(400).json(makeError(400, `Item not found. Valid itemIds: ${validItemIds.toString()}` ));
   const getRandomMessage = (): string => {

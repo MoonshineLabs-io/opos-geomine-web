@@ -9,6 +9,7 @@ export const inventoryRouter = ctx.router(inventoryApi);
 // I need to know what resources they've gathered, can be in a custodial wallet in the moonshine system for now, as long as I know what they have, then I need to be able to call a crafting endpoint. Users need to be able to export and trade them if they want as well.
 inventoryRouter.get("/inventory/:id", async (req, res) => {
   const id = req.params.id;
+  console.log({ id })
   // const p = await getInventory(id);
   const parseInput = thirtyTwoBytesSchema.safeParse(id);
   if (!parseInput.success)
