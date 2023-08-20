@@ -145,6 +145,7 @@ registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
       .status(400)
       .json(makeError(400, `Player could not be loaded/created.`));
   const playerId = saveLoadPlayer.value?.playerId ?? secretToId;
+  res.redirect("starlightartifacts://login?" + playerId);
   return res.status(200).json({
     playerId,
   });
