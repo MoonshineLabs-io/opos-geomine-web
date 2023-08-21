@@ -6,6 +6,7 @@ import {
   pubkeyStrSchema,
   thirtyTwoBytesSchema,
   txResponseSchema,
+  playerIdSchema,
 } from "../../schemas/SharedSchemas";
 import { errors } from "../../common/errorHandler";
 import { craftibleSchema } from "./craftibles";
@@ -23,7 +24,6 @@ export const craftSchema = createCraftSchema.extend({
   txLookupUTC: z.number().optional(),
 });
 
-
 export const craftStatusSchema = z.object({
   confirmed: z.boolean(),
   message: z.string(),
@@ -36,6 +36,26 @@ const craft = makeEndpoint({
   path: "/craft/:playerId/:itemId",
   alias: "craft",
   description: "Create a new Starlight Artifacts item",
+  parameters: [
+    {
+      type: "Path",
+      name: "playerId",
+      schema: playerIdSchema,
+      description: "Player ID",
+    },
+    {
+      type: "Path",
+      name: "itemId",
+      schema: urlPathParamSchema,
+      description: "Item ID to craft",
+    },
+    // {
+    //   type: "Query",
+    //   name: "amount",
+    //   schema: amountSchema.optional(),
+    //   description: "Number of items to craft. Omit for 1.",
+    // },
+  ],
   response: txResponseSchema,
   errors,
 });

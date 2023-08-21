@@ -1,12 +1,16 @@
 import { REGISTER_URL } from "../../constants";
 import { getPlayerById } from "../db/dbConnect";
+import { playerIdSchema } from "../schemas/SharedSchemas";
 import { PlayerMiddleware } from "./context";
 import { makeError } from "./errorHandler";
 
 // Middleware to check if player exists
 export const checkPlayerExists: PlayerMiddleware = async (req, res, next) => {
-  const playerId: string = req.body.playerId ?? req.params.playerId;
-
+  const id: string = req.body.playerId ?? req.params.playerId;
+  const parseInput = playerIdSchema.safeParse(id);
+  if (!parseInput.success)
+    return res.status(400).json(makeError(400, "Invalid playerId."));
+  const playerId = parseInput.data;
   const player = await getPlayerById(playerId);
   if (!player) {
     // throw new PlayerNotFoundError();

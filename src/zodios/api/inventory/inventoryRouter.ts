@@ -1,23 +1,15 @@
 import { ctx } from "../../common/context";
-import { makeError } from "../../common/errorHandler";
-import { thirtyTwoBytesSchema } from "../../schemas/SharedSchemas";
+import { checkPlayerExists } from "../../common/middleware";
 import { craftibles } from "../craft/craftibles";
 import { resources } from "../geo/resources";
 import { Inventory, inventoryApi } from "./inventoryApi";
 
 export const inventoryRouter = ctx.router(inventoryApi);
 // I need to know what resources they've gathered, can be in a custodial wallet in the moonshine system for now, as long as I know what they have, then I need to be able to call a crafting endpoint. Users need to be able to export and trade them if they want as well.
-inventoryRouter.get("/inventory/:id", async (req, res) => {
+inventoryRouter.get("/inventory/:id", checkPlayerExists, async (req, res) => {
   const id = req.params.id;
-  console.log({ id })
+  console.log({ id });
   // const p = await getInventory(id);
-  const parseInput = thirtyTwoBytesSchema.safeParse(id);
-  if (!parseInput.success)
-    return res.status(400).json(makeError(400, "Invalid id (wallet address)."));
-  //     return res.status(401).json({
-  //       error: { code: "Invalid input", message: zFail(parseInput.error) },
-  //     });
-  //   const playerInput = parseInput.data;
 
   // if (!p) return res.status(404).json(makeError(404, "Inventory not found"));
   // const inventory: Inventory = {
