@@ -2,6 +2,7 @@ import { makeApi, makeEndpoint } from "@zodios/core";
 // import { Document } from "mongodb";
 import * as z from "zod";
 import { errors } from "../../common/errorHandler";
+import { createItemSchema } from "../../schemas/ItemSchemas";
 import { playerIdSchema } from "../../schemas/SharedSchemas";
 import { craftibleSchema } from "../craft/craftibles";
 import { resourceSchema } from "../geo/resources";
@@ -30,5 +31,13 @@ const getInventory = makeEndpoint({
   errors,
 });
 
-const inventoryApi = makeApi([getInventory]);
+const getAllItems = makeEndpoint({
+  method: "get",
+  path: "/inventory",
+  alias: "getAllItems",
+  response: createItemSchema.array(),
+  description: "Get all Starlight Artifacts items",
+  errors,
+});
+const inventoryApi = makeApi([getInventory, getAllItems]);
 export { inventoryApi };

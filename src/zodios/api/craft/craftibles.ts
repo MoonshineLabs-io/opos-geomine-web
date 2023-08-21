@@ -17,7 +17,7 @@ export const craftibleSchema = z.object({
   itemId: z
     .string()
     .regex(/^[a-z]+([A-Z][a-z]*)*$/, "Must be in camelCase format"),
-  type: z.literal("craftible"),
+  category: z.string(),//z.literal("craftible"),
   image: z.string().optional(),
   recipe: recipeSchema,
   description: z.string(),
@@ -27,7 +27,7 @@ export const craftibles = [
   {
     label: "Energon Torch",
     itemId: "energonTorch",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [{ itemId: "energonShards", quantity: 1 }],
     description: "Lights up dark areas.",
@@ -35,7 +35,7 @@ export const craftibles = [
   {
     label: "Portable Shield",
     itemId: "portableShield",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "energonShards", quantity: 1 },
@@ -46,7 +46,7 @@ export const craftibles = [
   {
     label: "Quantum Communicator",
     itemId: "quantumCommunicator",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "quantumChips", quantity: 1 },
@@ -58,7 +58,7 @@ export const craftibles = [
   {
     label: "Scavenger Drone",
     itemId: "scavengerDrone",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "energonShards", quantity: 1 },
@@ -71,7 +71,7 @@ export const craftibles = [
   {
     label: "Bio-Luminescent Lantern",
     itemId: "bioLuminescentLantern",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "bioLuminescentSpores", quantity: 1 },
@@ -82,7 +82,7 @@ export const craftibles = [
   {
     label: "Quantum Analyzer",
     itemId: "quantumAnalyzer",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "quantumChips", quantity: 1 },
@@ -94,7 +94,7 @@ export const craftibles = [
   {
     label: "Stealth Cloak",
     itemId: "stealthCloak",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "nanofabrics", quantity: 1 },
@@ -106,7 +106,7 @@ export const craftibles = [
   {
     label: "Spore Incubator",
     itemId: "sporeIncubator",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "bioLuminescentSpores", quantity: 1 },
@@ -117,7 +117,7 @@ export const craftibles = [
   {
     label: "Energon Amplifier",
     itemId: "energonAmplifier",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "energonShards", quantity: 1 },
@@ -129,7 +129,7 @@ export const craftibles = [
   {
     label: "Nanofabric Weaver",
     itemId: "nanofabricWeaver",
-    type: "craftible",
+    category: "craftible",
     image: "",
     recipe: [
       { itemId: "nanofabrics", quantity: 1 },

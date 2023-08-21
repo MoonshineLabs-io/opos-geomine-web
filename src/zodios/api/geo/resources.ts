@@ -4,7 +4,7 @@ export type Resource = z.infer<typeof resourceSchema>;
 export const resourceSchema = z.object({
   label: z.string(),
   itemId: pubkeyStrSchema,
-  type: z.string(),
+  category: z.string(),
   rarity: z.number().int().min(1).max(1000),
   image: z.string().optional(),
   description: z.string(),
@@ -18,7 +18,7 @@ export const resources = [
   {
     label: "Energon Shards",
     itemId: "energonShards",
-    type: "resource",
+    category: "resource",
     rarity: 1,
     image: "",
     description: "Highly charged energy crystals which can power other items.",
@@ -26,7 +26,7 @@ export const resources = [
   {
     label: "Nanofabrics",
     itemId: "nanofabrics",
-    type: "resource",
+    category: "resource",
     rarity: 2,
     image: "",
     description:
@@ -35,7 +35,7 @@ export const resources = [
   {
     label: "Quantum Chips",
     itemId: "quantumChips",
-    type: "resource",
+    category: "resource",
     rarity: 10,
     image: "",
     description:
@@ -44,7 +44,7 @@ export const resources = [
   {
     label: "Bio-Luminescent Spores",
     itemId: "bioLuminescentSpores",
-    type: "resource",
+    category: "resource",
     rarity: 20,
     image: "",
     description:
