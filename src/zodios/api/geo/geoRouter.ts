@@ -17,22 +17,15 @@ function getRandomItem(weightedPool: any[]): any {
 }
 const getRandomResources = (nearbyAttempts: number): Resource[] => {
   // Create a weighted pool of potential resources based on rarity and probability
-  
-  const weightedPool: Resource[] = [];
-  for (const item of resources) {
+  const weightedPool: Resource[] = resources.flatMap((item) => {
     let probability = (1 / item.rarity) * Math.pow(0.8, nearbyAttempts);
-    probability = Math.min(Math.max(probability, 0), 1); // Clamp probability
+    probability = Math.min(Math.max(probability, 0), 1);
     if (item.rarity === 1) probability = 1;
-    const itemCount = Math.floor(RARITY_POOL_COUNT * probability);
-    weightedPool.push(...Array(itemCount).fill(item));
-  }
-
-  // Randomly select 10 items from the weighted pool
-  const foundItems: Resource[] = [];
-  for (let i = 0; i < SCAN_RETURN_QTY; i++) {
-    foundItems.push(getRandomItem(weightedPool));
-  }
-  return foundItems;
+    return Array(Math.floor(RARITY_POOL_COUNT * probability)).fill(item);
+  });
+  return Array(SCAN_RETURN_QTY)
+    .fill(null)
+    .map(() => getRandomItem(weightedPool));
 };
 const assignUniqueIdsToResources = (resources: Resource[]): ScannedResource[] =>
   resources.map((item) => ({
