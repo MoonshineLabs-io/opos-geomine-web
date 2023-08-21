@@ -19,7 +19,9 @@ export const thirtyTwoBytesSchema = base58Schema.refine(
     message: "Must be a valid base58-encoded 32 byte string",
   }
 );
-export const playerIdSchema = thirtyTwoBytesSchema;
+export const playerIdSchema = thirtyTwoBytesSchema.describe(
+  "Player ID (pubkey)"
+  );
 export const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 
 // Define a regular expression that allows URL-safe characters (alphanumeric, hyphen, underscore)

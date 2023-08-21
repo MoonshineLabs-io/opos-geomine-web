@@ -2,7 +2,7 @@ import { makeApi, makeEndpoint } from "@zodios/core";
 import { z } from "zod";
 import { errors } from "../../common/errorHandler";
 import { playerIdSchema, txResponseSchema } from "../../schemas/SharedSchemas";
-import { resourceSchema, scannedResourceSchema } from "./resources";
+import { scannedResourceSchema } from "./resources";
 // POST: /opos/geomine/ {"lat":12.3, "lon": 13.4}
 // and get back a list of things nearby, we can talk about how to distribute later if we need to, but maybe rarity is a formula run through with both positions and we get some cool distributions
 const scan = makeEndpoint({
@@ -14,9 +14,11 @@ const scan = makeEndpoint({
       type: "Body",
       name: "postBody",
       schema: z.object({
-        playerId: playerIdSchema.default("8VWiSEmgcZvNtok6zcrHgUp83ZAJN9NoiPD4X1TQiPUp"),
+        playerId: playerIdSchema.default(
+          "8VWiSEmgcZvNtok6zcrHgUp83ZAJN9NoiPD4X1TQiPUp"
+        ),
         longitude: z.number().default(42.79469),
-        latitude: z.number().default(10.14980),
+        latitude: z.number().default(10.1498),
       }),
     },
   ],
@@ -28,9 +30,24 @@ const mine = makeEndpoint({
   method: "get",
   path: "/geo/mine/:playerId/:eid",
   alias: "geomine",
+  parameters: [
+    {
+      type: "Path",
+      name: "playerId",
+      schema: playerIdSchema,
+      description: "Player ID (wallet address)",
+    },
+    {
+      type: "Path",
+      name: "eid",
+      schema: z.string(),
+      description: "EID of item to mine",
+    },
+  ],
   response: txResponseSchema,
   description: "Mine an item by EID & playerId.",
   errors,
 });
 const api = makeApi([scan, mine]);
+export type geoApi = typeof api;
 export default api;
