@@ -1,4 +1,4 @@
-import { getInventory } from "../../../utils/solanaPlay";
+import { getInventory, withdraw } from "../../../utils/solanaPlay";
 import { ctx } from "../../common/context";
 import { checkPlayerExists } from "../../common/middleware";
 import { CreateItem } from "../../schemas/ItemSchemas";
@@ -40,6 +40,14 @@ inventoryRouter.get("/inventory/:id", checkPlayerExists, async (req, res) => {
   const inventory = await getInventory(id);
 
   return res.status(200).json(inventory);
+});
+
+// var requestUrl = $"{BASE_URL}/inventory/withdraw/{playerId}/{itemId}";
+inventoryRouter.get("/inventory/withdraw/:playerId/:itemid", async (req, res) => {
+  const playerId = req.params.playerId;
+  const itemId = req.params.itemid;
+  const result = await withdraw(playerId, itemId);
+  return res.status(200).json(result);
 });
 
 inventoryRouter.get("/inventory", (req, res) => {

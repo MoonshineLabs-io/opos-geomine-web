@@ -42,3 +42,20 @@ export async function craftItem(playerId: string, itemId: string) {
   const json = await result.json();
   return json;
 }
+
+export async function withdraw(playerId: string, itemId: string) {
+  const result = await fetch(`${SOLANAPLAY_API_URL}/inventory/withdraw`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": SOLANAPLAY_API_KEY,
+    },
+    body: JSON.stringify({
+      platformId: "starart",
+      playerId,
+      itemId,
+    }),
+  });
+  const json = await result.json();
+  return json;
+}

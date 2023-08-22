@@ -3,7 +3,7 @@ import { makeApi, makeEndpoint } from "@zodios/core";
 import * as z from "zod";
 import { errors } from "../../common/errorHandler";
 import { createItemSchema } from "../../schemas/ItemSchemas";
-import { playerIdSchema } from "../../schemas/SharedSchemas";
+import { playerIdSchema, txResponseSchema } from "../../schemas/SharedSchemas";
 import { craftibleSchema } from "../craft/craftibles";
 import { resourceSchema } from "../geo/resources";
 // export type InventoryDoc = Document & Inventory;
@@ -30,6 +30,28 @@ const getInventory = makeEndpoint({
   ],
   errors,
 });
+const withdraw = makeEndpoint({
+  method: "get",
+  path: "/inventory/withdraw/:playerId/:itemid",
+  alias: "withdrawItem",
+  response: txResponseSchema,
+  description: "Withdraw item from player inventory",
+  parameters: [
+    {
+      type: "Path",
+      name: "playerId",
+      schema: playerIdSchema,
+      description: "Player ID",
+    },
+    {
+      type: "Path",
+      name: "itemid",
+      schema: z.string(),
+      description: "Item ID",
+    },
+  ],
+  errors,
+});
 
 const getAllItems = makeEndpoint({
   method: "get",
@@ -39,5 +61,5 @@ const getAllItems = makeEndpoint({
   description: "Get all Starlight Artifacts items",
   errors,
 });
-const inventoryApi = makeApi([getInventory, getAllItems]);
+const inventoryApi = makeApi([getInventory, getAllItems, withdraw]);
 export { inventoryApi };
