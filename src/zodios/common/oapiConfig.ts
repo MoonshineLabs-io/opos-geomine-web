@@ -3,6 +3,7 @@ import { craftApi } from "../api/craft/craftApi";
 import geoApi from "../api/geo/geoApi";
 import { inventoryApi } from "../api/inventory/inventoryApi";
 import { specApi } from "../api/spec";
+import { registerApi } from "../api/register/registerApi";
 
 export const info = {
   title: "Moonshine Labs OPOS Geomine API Documentation",
@@ -27,7 +28,7 @@ export const remoteServers = [
   {
     url: "https://stageopos.moonshinelabs.io/api",
     description: "Staging Server",
-  }
+  },
 ];
 export const localServer = {
   url: "http://localhost:3000/api",
@@ -43,6 +44,7 @@ export const apiSpec = (lh = false) => {
     .addPublicApi(geoApi)
     .addPublicApi(inventoryApi)
     .addPublicApi(craftApi)
+    .addPublicApi(registerApi)
     .addPublicApi(specApi)
     .build();
 };

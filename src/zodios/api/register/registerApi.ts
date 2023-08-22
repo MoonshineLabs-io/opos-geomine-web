@@ -113,5 +113,4 @@ const redirect = makeEndpoint({
   errors,
 });
 
-const api = makeApi([register, redirect, noob, tip]);
-export default api;
+export const registerApi = makeApi([register, redirect, noob, tip]);
