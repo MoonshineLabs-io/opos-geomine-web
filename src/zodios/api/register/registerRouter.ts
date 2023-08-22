@@ -2,7 +2,7 @@ import { Collection } from "mongodb";
 import nacl from "tweetnacl";
 import { ctx } from "../../common/context";
 import { getMongoClient } from "../../db/dbConnect";
-import registerApi, { Player, Registration } from "./registerApi";
+import { registerApi, Player, Registration } from "./registerApi";
 import { TipLink } from "@tiplink/api";
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
