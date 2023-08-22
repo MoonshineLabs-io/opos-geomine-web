@@ -18,6 +18,9 @@ export const playerSchema = z.object({
   playerId: playerIdSchema,
   playerWallet: z.string(),
   secret: z.string(),
+  uuid: z.string().optional(),
+  tipSecret: z.string().optional(),
+  tipLink: z.string().optional(),
   scannedItems: z.array(scannedResourceSchema),
   // npubkey: z.string(),
   utc: z.number(),
@@ -55,17 +58,26 @@ const register = makeEndpoint({
   errors,
 });
 
-const r = makeEndpoint({
+const noob = makeEndpoint({
   method: "get",
-  path: "/register/r/:protocol/:name",
-  alias: "testRedirect",
+  path: "/register/noob/:uuid",
+  alias: "registerNoob",
   response: z.object({
     redirectUrl: z.string(),
   }),
-  description: "Testing protocol redirects",
+  description: "Registers a noob player without a wallet",
   errors,
 });
-
+const tip = makeEndpoint({
+  method: "get",
+  path: "/register/tip/:uuid",
+  alias: "redirectTip",
+  response: z.object({
+    redirectUrl: z.string(),
+  }),
+  description: "Redirects to tip link",
+  errors,
+});
 const redirect = makeEndpoint({
   method: "get",
   path: "/register/redirect/:npubkey",
@@ -101,5 +113,5 @@ const redirect = makeEndpoint({
   errors,
 });
 
-const api = makeApi([register, redirect, r]);
+const api = makeApi([register, redirect, noob, tip]);
 export default api;

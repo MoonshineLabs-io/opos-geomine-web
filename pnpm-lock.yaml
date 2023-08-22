@@ -41,6 +41,9 @@ dependencies:
   '@solana/web3.js':
     specifier: ^1.77.3
     version: 1.77.3
+  '@tiplink/api':
+    specifier: ^0.1.2
+    version: 0.1.2
   '@vercel/analytics':
     specifier: ^1.0.1
     version: 1.0.1
@@ -3569,6 +3572,19 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
+  /@tiplink/api@0.1.2:
+    resolution: {integrity: sha512-4Pfo4A8zPGYu5UIkZOgtlK1MG6bO7qIc2sHA0iMfw/RbJhYwnF8THe8S1Umg9LdQ/E5jkT29siMjrEfoRtv81w==}
+    dependencies:
+      '@solana/web3.js': 1.77.3
+      bs58: 5.0.0
+      libsodium: 0.7.11
+      libsodium-wrappers-sumo: 0.7.11
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+    dev: false
+
   /@tokenizer/token@0.3.0:
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
     dev: false
@@ -5906,8 +5922,8 @@ packages:
       debug: 3.2.7
       doctrine: 2.1.0
       eslint: 8.41.0
-      eslint-import-resolver-node: 0.3.8
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-node@0.3.8)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.7)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.5.5)(eslint@8.41.0)
       has: 1.0.3
       is-core-module: 2.13.0
       is-glob: 4.0.3
@@ -8010,6 +8026,20 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /libsodium-sumo@0.7.11:
+    resolution: {integrity: sha512-bY+7ph7xpk51Ez2GbE10lXAQ5sJma6NghcIDaSPbM/G9elfrjLa0COHl/7P6Wb/JizQzl5UQontOOP1z0VwbLA==}
+    dev: false
+
+  /libsodium-wrappers-sumo@0.7.11:
+    resolution: {integrity: sha512-DGypHOmJbB1nZn89KIfGOAkDgfv5N6SBGC3Qvmy/On0P0WD1JQvNRS/e3UL3aFF+xC0m+MYz5M+MnRnK2HMrKQ==}
+    dependencies:
+      libsodium-sumo: 0.7.11
+    dev: false
+
+  /libsodium@0.7.11:
+    resolution: {integrity: sha512-WPfJ7sS53I2s4iM58QxY3Inb83/6mjlYgcmZs7DJsvDlnmVUwNinBCi5vBT43P6bHRy01O4zsMU2CoVR6xJ40A==}
+    dev: false
 
   /lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}

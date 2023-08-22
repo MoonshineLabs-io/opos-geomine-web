@@ -3,7 +3,7 @@ import nacl from "tweetnacl";
 import { ctx } from "../../common/context";
 import { getMongoClient } from "../../db/dbConnect";
 import registerApi, { Player, Registration } from "./registerApi";
-
+import { TipLink } from "@tiplink/api";
 import { Keypair } from "@solana/web3.js";
 import bs58 from "bs58";
 import { makeError } from "../../common/errorHandler";
@@ -81,9 +81,58 @@ registerRouter.get("/register", async (req, res) => {
   // will hit redirect endpoint with:
 });
 
-registerRouter.get("/register/r/:protocol/:name", async (req, res) => {
-  const { protocol, name } = req.params;
-  res.redirect(protocol + "://" + name);
+registerRouter.get("/register/tip/:uuid", async (req, res) => {
+  const uuid = req.params.uuid as string;
+  const client = await getMongoClient();
+  const db = client.db("StarlightArtifacts");
+  const playersCollection: Collection<Player> = db.collection("players");
+  const player = await playersCollection.findOne({
+    uuid: uuid,
+  });
+  if (!player || !player.tipLink)
+    return res.status(400).json(makeError(400, `Player or tiplink not found.`));
+  return res.redirect(player.tipLink);
+});
+registerRouter.get("/register/noob/:uuid", async (req, res) => {
+  const custodialKeypair = Keypair.generate();
+  const uuid = req.params.uuid as string;
+  const privkey = custodialKeypair.secretKey;
+  const cprivkey = bs58.encode(privkey);
+  const pubkey = custodialKeypair.publicKey;
+  const tip = await TipLink.create().then((tiplink) => {
+    console.log("link: ", tiplink.url.toString());
+    console.log("publicKey: ", tiplink.keypair.publicKey.toBase58());
+    return tiplink;
+  });
+  const client = await getMongoClient();
+  const db = client.db("StarlightArtifacts");
+  const playersCollection: Collection<Player> = db.collection("players");
+  const tipPubkey = pubkey.toBase58();
+  const saveLoadPlayer = await playersCollection.findOneAndUpdate(
+    {
+      uuid: uuid,
+    },
+    {
+      $setOnInsert: {
+        playerId: tipPubkey,
+        playerWallet: tip.keypair.publicKey.toBase58(),
+        secret: cprivkey,
+        uuid: uuid,
+        tipSecret: bs58.encode(tip.keypair.secretKey),
+        tipLink: tip.url.toString(),
+        utc: Date.now(),
+      },
+    },
+    { upsert: true }
+  );
+  console.log({ saveLoadPlayer });
+  const status = saveLoadPlayer.ok;
+  if (!status)
+    return res
+      .status(400)
+      .json(makeError(400, `Player could not be loaded/created.`));
+  const playerId = saveLoadPlayer.value?.playerId ?? tipPubkey;
+  return res.redirect("starlightartifacts://login?" + playerId);
 });
 registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   // ?phantom_encryption_public_key=KbnntHs2XQ4eusxo5psP8gJHSnwG736uREAeN63Bp5a&nonce=MYNdsCS2UE1958VH2r4NeLtbYG6usA3Tq&data=3TgXuzzoHVKMd8
