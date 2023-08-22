@@ -1,3 +1,4 @@
+import { getInventory } from "../../../utils/solanaPlay";
 import { ctx } from "../../common/context";
 import { checkPlayerExists } from "../../common/middleware";
 import { CreateItem } from "../../schemas/ItemSchemas";
@@ -31,11 +32,13 @@ inventoryRouter.get("/inventory/:id", checkPlayerExists, async (req, res) => {
     return shuffled.slice(0, count);
   };
 
-  const inventory: Inventory = {
+  const inventory1: Inventory = {
     resources: getRandomItems(resources, getRandomNumber(0, 15)),
     craftibles: getRandomItems(craftibles, getRandomNumber(0, 6)),
     lastModified: new Date(),
   };
+  const inventory = await getInventory(id);
+
   return res.status(200).json(inventory);
 });
 
@@ -87,6 +90,9 @@ function convertToSolanaPlayFormat(
   return {
     ...item,
     priceArray,
-    image: "https://shdw-drive.genesysgo.net/5RCFihRGuvxpQgzg3tw8B7TeUwCZuM2JsKyGcRsb7dia/" + item.itemId + ".png",
+    image:
+      "https://shdw-drive.genesysgo.net/5RCFihRGuvxpQgzg3tw8B7TeUwCZuM2JsKyGcRsb7dia/" +
+      item.itemId +
+      ".png",
   };
 }

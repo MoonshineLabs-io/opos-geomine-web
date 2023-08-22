@@ -1,3 +1,4 @@
+import { craftItem } from "../../../utils/solanaPlay";
 import { ctx } from "../../common/context";
 import { makeError } from "../../common/errorHandler";
 import { checkPlayerExists } from "../../common/middleware";
@@ -34,12 +35,13 @@ craftRouter.get(
     };
     const message = getRandomMessage();
     const success = message === "Completed";
-    const response = {
+    const response1 = {
       success,
       message,
       // craftId: Keypair.generate().publicKey.toString(),
       // createdUTC: Date.now(),
     };
+    const response = await craftItem(playerId, itemId);
     return res.status(200).json(response);
     // return res.status(200).json([] as Craftible[]);
   }

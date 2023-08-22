@@ -33,6 +33,7 @@
   "dependencies": {
     "@metaplex-foundation/beet": "^0.7.1",
     "@metaplex-foundation/js": "^0.19.4",
+    "@metaplex-foundation/mpl-bubblegum": "^0.7.0",
     "@metaplex-foundation/mpl-candy-machine": "6.0.0-alpha.19",
     "@metaplex-foundation/mpl-token-metadata": "3.0.0-alpha.24",
     "@metaplex-foundation/umi": "^0.8.7",
@@ -41,6 +42,7 @@
     "@saberhq/solana-contrib": "^1.14.11",
     "@solana/pay": "^0.2.5",
     "@solana/qr-code-styling": "1.6.0",
+    "@solana/spl-account-compression": "^0.1.10",
     "@solana/spl-token": "^0.3.7",
     "@solana/web3.js": "^1.77.3",
     "@tiplink/api": "^0.1.2",

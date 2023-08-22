@@ -1,3 +1,4 @@
+import { mint } from "@metaplex-foundation/mpl-candy-machine/dist/src/generated/instructions/mint";
 import crypto from "crypto";
 import { RARITY_POOL_COUNT, SCAN_RETURN_QTY } from "../../../constants";
 import { ctx } from "../../common/context";
@@ -8,6 +9,36 @@ import { getNearbyAttempts, recordMiningAttempt } from "../../db/dbOperations";
 import { TxResponse } from "../../schemas/SharedSchemas";
 import geoApi from "./geoApi";
 import { Resource, resources, ScannedResource } from "./resources";
+import {
+  DefaultCandyGuardSettings,
+  Metaplex,
+  PublicKey,
+  CandyMachine,
+  SolAmount,
+  SplTokenAmount,
+  FindNftsByOwnerOutput,
+  getMerkleRoot,
+  getMerkleTree,
+} from "@metaplex-foundation/js";
+//https://github.com/MarkSackerberg/CandyMachine-v3-ui-template/blob/main/utils/checker.ts
+
+import {
+  createNft,
+  mplTokenMetadata,
+  TokenStandard,
+} from "@metaplex-foundation/mpl-token-metadata";
+import { Connection, Keypair } from "@solana/web3.js";
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { mplCandyMachine } from "@metaplex-foundation/mpl-candy-machine";
+import {
+  createSignerFromKeypair,
+  generateSigner,
+  keypairIdentity,
+  percentAmount,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
+import bs58 from "bs58";
+import { mintItem } from "../../../utils/solanaPlay";
 
 export const geoRouter = ctx.router(geoApi);
 
@@ -59,6 +90,7 @@ geoRouter.get(
         .status(400)
         .json(makeError(400, `Item not found or already mined.`));
     }
+    const mintTx = await mintItem(playerId, item.itemId);
     const itemIndex = scannedItems.indexOf(item);
     scannedItems.splice(itemIndex, 1);
     const updatePlayer = await updatePlayerScannedItems(playerId, scannedItems);
@@ -69,3 +101,4 @@ geoRouter.get(
     return res.status(200).json(txResponse);
   }
 );
+
