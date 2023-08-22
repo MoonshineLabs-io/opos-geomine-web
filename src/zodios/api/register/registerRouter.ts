@@ -91,7 +91,9 @@ registerRouter.get("/register/tip/:uuid", async (req, res) => {
   });
   if (!player || !player.tipLink)
     return res.status(400).json(makeError(400, `Player or tiplink not found.`));
-  return res.redirect(player.tipLink);
+  return res.status(200).json({
+    tiplink: player.tipLink,
+  });
 });
 registerRouter.get("/register/noob/:uuid", async (req, res) => {
   const custodialKeypair = Keypair.generate();
@@ -132,7 +134,10 @@ registerRouter.get("/register/noob/:uuid", async (req, res) => {
       .status(400)
       .json(makeError(400, `Player could not be loaded/created.`));
   const playerId = saveLoadPlayer.value?.playerId ?? tipPubkey;
-  return res.redirect("starlightartifacts://login?" + playerId);
+  return res.status(200).json({
+    playerId,
+  });
+  // return res.redirect("starlightartifacts://login?" + playerId);
 });
 registerRouter.get("/register/redirect/:npubkey", async (req, res) => {
   // ?phantom_encryption_public_key=KbnntHs2XQ4eusxo5psP8gJHSnwG736uREAeN63Bp5a&nonce=MYNdsCS2UE1958VH2r4NeLtbYG6usA3Tq&data=3TgXuzzoHVKMd8

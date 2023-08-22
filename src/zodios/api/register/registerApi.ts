@@ -63,7 +63,7 @@ const noob = makeEndpoint({
   path: "/register/noob/:uuid",
   alias: "registerNoob",
   response: z.object({
-    redirectUrl: z.string(),
+    playerId: playerIdSchema,
   }),
   description: "Registers a noob player without a wallet",
   errors,
@@ -73,7 +73,7 @@ const tip = makeEndpoint({
   path: "/register/tip/:uuid",
   alias: "redirectTip",
   response: z.object({
-    redirectUrl: z.string(),
+    tiplink: z.string(),
   }),
   description: "Redirects to tip link",
   errors,
