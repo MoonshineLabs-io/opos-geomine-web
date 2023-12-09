@@ -11,44 +11,22 @@ export const inventoryRouter = ctx.router(inventoryApi);
 inventoryRouter.get("/inventory/:id", checkPlayerExists, async (req, res) => {
   const id = req.params.id;
   console.log({ id });
-  // const p = await getInventory(id);
 
-  // if (!p) return res.status(404).json(makeError(404, "Inventory not found"));
-  // const inventory: Inventory = {
-  //   resources: [],
-  //   craftibles: [],
-  //   lastModified: new Date(),
-  // };
-  const getRandomNumber = (min: number, max: number): number => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
-  const getRandomItems = (arr: any[], count: number): any[] => {
-    const shuffled = arr.slice(0);
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled.slice(0, count);
-  };
-
-  const inventory1: Inventory = {
-    resources: getRandomItems(resources, getRandomNumber(0, 15)),
-    craftibles: getRandomItems(craftibles, getRandomNumber(0, 6)),
-    lastModified: new Date(),
-  };
   const inventory = await getInventory(id);
-
-  return res.status(200).json(inventory);
+  const ret = inventory.platformItems ? inventory.platformItems : inventory;
+  return res.status(200).json(ret);
 });
 
 // var requestUrl = $"{BASE_URL}/inventory/withdraw/{playerId}/{itemId}";
-inventoryRouter.get("/inventory/withdraw/:playerId/:itemid", async (req, res) => {
-  const playerId = req.params.playerId;
-  const itemId = req.params.itemid;
-  const result = await withdraw(playerId, itemId);
-  return res.status(200).json(result);
-});
+inventoryRouter.get(
+  "/inventory/withdraw/:playerId/:itemid",
+  async (req, res) => {
+    const playerId = req.params.playerId;
+    const itemId = req.params.itemid;
+    const result = await withdraw(playerId, itemId);
+    return res.status(200).json(result);
+  }
+);
 
 inventoryRouter.get("/inventory", (req, res) => {
   const inventory = craftibles
